@@ -62,3 +62,73 @@
         total-dividends: uint
     }
 )
+
+;; Token ownership records
+(define-map token-balances
+    { owner: principal, asset-id: uint }
+    { balance: uint }
+)
+
+;; KYC compliance registry
+(define-map kyc-status
+    { address: principal }
+    { 
+        is-approved: bool,
+        level: uint,
+        expiry: uint 
+    }
+)
+
+;; Governance proposals
+(define-map proposals
+    { proposal-id: uint }
+    {
+        title: (string-ascii 256),
+        asset-id: uint,
+        start-height: uint,
+        end-height: uint,
+        executed: bool,
+        votes-for: uint,
+        votes-against: uint,
+        minimum-votes: uint
+    }
+)
+
+;; Voting registry
+(define-map votes
+    { proposal-id: uint, voter: principal }
+    { vote-amount: uint }
+)
+
+;; Dividend claim tracker
+(define-map dividend-claims
+    { asset-id: uint, claimer: principal }
+    { last-claimed-amount: uint }
+)
+
+;; Oracle price feeds
+(define-map price-feeds
+    { asset-id: uint }
+    {
+        price: uint,
+        decimals: uint,
+        last-updated: uint,
+        oracle: principal
+    }
+)
+
+;; Input Validation Functions
+
+(define-private (validate-asset-value (value uint))
+    (and 
+        (>= value MIN-ASSET-VALUE)
+        (<= value MAX-ASSET-VALUE)
+    )
+)
+
+(define-private (validate-duration (duration uint))
+    (and 
+        (>= duration MIN-DURATION)
+        (<= duration MAX-DURATION)
+    )
+)
