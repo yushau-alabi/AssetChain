@@ -225,6 +225,7 @@
             (claimable-amount (/ (* balance (- total-dividends last-claim)) tokens-per-asset))
         )
         (asserts! (> claimable-amount u0) err-invalid-amount)
+		(asserts! (is-some (get-asset-info asset-id)) err-not-found)
         (ok (map-set dividend-claims
             { asset-id: asset-id, claimer: tx-sender }
             { last-claimed-amount: total-dividends }
