@@ -132,3 +132,50 @@
         (<= duration MAX-DURATION)
     )
 )
+
+(define-private (validate-kyc-level (level uint))
+    (<= level MAX-KYC-LEVEL)
+)
+
+(define-private (validate-expiry (expiry uint))
+    (and 
+        (> expiry stacks-block-height)
+        (<= (- expiry stacks-block-height) MAX-EXPIRY)
+    )
+)
+
+(define-private (validate-minimum-votes (vote-count uint))
+    (and 
+        (> vote-count u0)
+        (<= vote-count tokens-per-asset)
+    )
+)
+
+(define-private (validate-metadata-uri (uri (string-ascii 256)))
+    (and 
+        (> (len uri) u0)
+        (<= (len uri) u256)
+    )
+)
+
+;; Helper Functions
+
+(define-private (get-next-asset-id)
+    (default-to u1
+        (get-last-asset-id)
+    )
+)
+
+(define-private (get-next-proposal-id)
+    (default-to u1
+        (get-last-proposal-id)
+    )
+)
+
+(define-private (get-last-asset-id)
+    none
+)
+
+(define-private (get-last-proposal-id)
+    none
+)
