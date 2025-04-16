@@ -231,3 +231,35 @@
         ))
     )
 )
+
+;; Governance Functions
+
+(define-public (create-proposal 
+    (asset-id uint)
+    (title (string-ascii 256))
+    (duration uint)
+    (minimum-votes uint))
+    (begin
+        (asserts! (validate-duration duration) err-invalid-duration)
+        (asserts! (validate-minimum-votes minimum-votes) err-invalid-votes)
+        (asserts! (validate-metadata-uri title) err-invalid-title)
+        (asserts! (>= (get-balance tx-sender asset-id) (/ tokens-per-asset u10)) err-not-authorized)
+
+        (let
+            ((proposal-id (get-next-proposal-id)))
+            (ok (map-set proposals
+                { proposal-id: proposal-id }
+                {
+                    title: title,
+                    asset-id: asset-id,
+                    start-height: stacks-block-height,
+                    end-height: (+ stacks-block-height duration),
+                    executed: false,
+                    votes-for: u0,
+                    votes-against: u0,
+                    minimum-votes: minimum-votes
+                }
+            ))
+        )
+    )
+)
